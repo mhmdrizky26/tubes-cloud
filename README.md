@@ -1,8 +1,6 @@
 # Mindspark — Frontend (React + Vite)
 
-Frontend aplikasi pembelajaran adaptif **CerdasBelajar / Mindspark**. Sebelumnya berupa
-prototipe React via CDN + Babel in-browser; sekarang sudah dikonversi menjadi proyek
-React modular berbasis **Vite** sehingga dapat di-build, di-Dockerize, dan masuk pipeline CI/CD.
+Frontend aplikasi pembelajaran adaptif **Mindspark**.
 
 ## Menjalankan
 
