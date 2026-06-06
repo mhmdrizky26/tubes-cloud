@@ -1,14 +1,3 @@
-"""Ekstraksi teks dari file upload sebelum dikirim ke AI Service.
-
-Didukung:
-  • .txt/.md/.csv  → decode langsung
-  • .pdf           → pypdf
-  • .docx          → python-docx
-  • .pptx          → python-pptx
-  • gambar (png/jpg/…) → TIDAK diekstrak di sini; dikirim ke AI Service untuk
-                          dibaca Gemini (vision/OCR). Lihat is_image().
-"""
-
 import io
 
 IMAGE_EXT = {"png", "jpg", "jpeg", "webp", "gif", "bmp", "heic", "heif", "tiff"}
@@ -63,7 +52,6 @@ def extract_text(filename: str, data: bytes, content_type: str | None = None) ->
             return ""
 
     if is_image(filename, content_type):
-        return ""  # dibaca oleh Gemini vision di AI Service
+        return ""
 
-    # txt, md, csv, atau teks lain
     return data.decode("utf-8", errors="ignore").strip()

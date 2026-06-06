@@ -1,8 +1,3 @@
-"""Chat (RAG): proxy ke AI Service yang melakukan retrieval + generation.
-
-Backend API tidak menyimpan API key Gemini — itu hanya ada di AI Service VPC.
-"""
-
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -18,7 +13,6 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 @router.post("", response_model=ChatResponse)
 async def chat(payload: ChatRequest, db: Session = Depends(get_db), current: User = Depends(get_current_user)):
-    # Validasi: hanya boleh bertanya pada materi milik user.
     if payload.material_ids:
         owned = (
             db.query(Material.id)
@@ -32,7 +26,6 @@ async def chat(payload: ChatRequest, db: Session = Depends(get_db), current: Use
     else:
         material_ids = [row[0] for row in db.query(Material.id).filter(Material.owner_id == current.id).all()]
 
-    # Belum ada materi → jawab langsung, jangan buang kuota AI.
     if not material_ids:
         return ChatResponse(
             answer="You don't have any materials yet. Upload one from 'Add material', "

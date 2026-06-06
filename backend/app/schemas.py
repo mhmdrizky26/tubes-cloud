@@ -1,11 +1,8 @@
-"""Pydantic schemas — validasi request/response & dokumentasi otomatis."""
-
 from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
-# ── Auth ───────────────────────────────────────────────────────────
 class UserCreate(BaseModel):
     email: EmailStr
     name: str = Field(min_length=1, max_length=120)
@@ -30,7 +27,6 @@ class Token(BaseModel):
     user: UserOut
 
 
-# ── Materials ──────────────────────────────────────────────────────
 class MaterialOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
@@ -43,7 +39,6 @@ class MaterialOut(BaseModel):
     created_at: datetime
 
 
-# ── Quiz ───────────────────────────────────────────────────────────
 class QuizOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
@@ -65,14 +60,12 @@ class AttemptOut(BaseModel):
     explanation: str
 
 
-# ── Flashcards ─────────────────────────────────────────────────────
 class FlashcardOut(BaseModel):
     q: str
     a: str
     tag: str
 
 
-# ── Dashboard stats ────────────────────────────────────────────────
 class StatsOut(BaseModel):
     materials: int
     quizzes_answered: int
@@ -81,7 +74,6 @@ class StatsOut(BaseModel):
     recent: list[MaterialOut]
 
 
-# ── Chat (RAG) ─────────────────────────────────────────────────────
 class ChatRequest(BaseModel):
     question: str = Field(min_length=1)
     material_ids: list[int] = Field(default_factory=list)

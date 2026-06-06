@@ -1,11 +1,3 @@
-"""Wrapper Gemini untuk generation (jawaban RAG, ringkasan, quiz).
-
-Jika GEMINI_API_KEY kosong → mode mock (tetap jalan untuk dev/demo tanpa key).
-Jika Gemini error (quota 429, jaringan, dll) → fallback anggun berbasis konteks,
-sehingga API tidak pernah balas 500 saat demo.
-Hanya service inilah yang memegang API key Gemini (isolasi di AI Service VPC).
-"""
-
 from __future__ import annotations
 
 import json
@@ -33,12 +25,11 @@ def _generate(prompt: str, json_mode: bool = False) -> str:
             model = genai.GenerativeModel(name, generation_config=generation_config)
             return model.generate_content(prompt).text
         except ResourceExhausted as e:
-            last_err = e  # key/model ini habis → coba kombinasi berikutnya
+            last_err = e
             continue
     raise last_err or RuntimeError("Semua API key & model Gemini habis kuotanya")
 
 
-# ── Baca gambar / foto (Gemini multimodal — OCR + deskripsi) ────────
 def transcribe_image(image_bytes: bytes, mime_type: str | None = None) -> str:
     """Ekstrak teks & deskripsi dari gambar/foto memakai Gemini vision.
     Tanpa API key → kembalikan string kosong (OCR butuh model)."""
@@ -58,13 +49,12 @@ def transcribe_image(image_bytes: bytes, mime_type: str | None = None) -> str:
             genai.configure(api_key=key)
             return genai.GenerativeModel(name).generate_content([prompt, part]).text or ""
         except ResourceExhausted:
-            continue  # key/model habis → coba berikutnya
+            continue
         except Exception:
             return ""
     return ""
 
 
-# ── Jawaban RAG ────────────────────────────────────────────────────
 def _context_only_answer(question: str, contexts: list[dict], note: str) -> str:
     if not contexts:
         return f"{note}\nNo relevant context found in your material for: {question}"
@@ -91,13 +81,12 @@ def answer_with_context(question: str, contexts: list[dict], lang: str = "en") -
     )
     try:
         return _generate(prompt)
-    except Exception as exc:  # quota/limit/network → still answer from context
+    except Exception as exc:
         return _context_only_answer(
             question, contexts, f"[Gemini unavailable ({type(exc).__name__}); answer from material context]"
         )
 
 
-# ── Ringkasan + quiz dari materi ───────────────────────────────────
 def _mock_summary_quiz(note_en: str, note_id: str) -> dict:
     return {
         "summary": {
@@ -147,7 +136,7 @@ def summarize_and_quiz(text: str, n_questions: int = 5) -> dict:
     )
     try:
         raw = _generate(prompt, json_mode=True)
-    except Exception as exc:  # quota/limit → fallback so upload still succeeds
+    except Exception as exc:
         return _mock_summary_quiz(
             f"[Gemini unavailable ({type(exc).__name__}); fallback summary.]",
             f"[Gemini tidak tersedia ({type(exc).__name__}); ringkasan fallback.]",

@@ -1,8 +1,5 @@
-"""Pemecahan teks jadi chunk (size-based dengan overlap)."""
-
-
 def chunk_text(text: str, size: int = 800, overlap: int = 120) -> list[str]:
-    text = " ".join(text.split())  # normalisasi whitespace
+    text = " ".join(text.split())
     if not text:
         return []
     chunks: list[str] = []

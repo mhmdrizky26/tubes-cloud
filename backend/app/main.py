@@ -1,9 +1,3 @@
-"""Mindspark Backend API (Backend VPC).
-
-Bertanggung jawab atas: auth, materials, quiz, scoring, dan proxy chat ke
-AI Service. Tidak menyimpan API key model — itu di AI Service VPC.
-"""
-
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -16,7 +10,6 @@ from .routers import auth, chat, materials, quiz, stats
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Demo/dev: buat tabel dari ORM bila belum ada. Produksi: pakai schema.sql/migrasi.
     Base.metadata.create_all(bind=engine)
     yield
 
@@ -31,8 +24,6 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_origin],
-    # Dev: izinkan juga localhost, 127.0.0.1, dan IP LAN (mis. 192.168.x.x)
-    # di port berapa pun — supaya akses via alamat jaringan tidak kena CORS.
     allow_origin_regex=r"https?://(localhost|127\.0\.0\.1|(\d{1,3}\.){3}\d{1,3})(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],

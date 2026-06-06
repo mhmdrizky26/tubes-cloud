@@ -1,8 +1,3 @@
-"""Quiz: ambil soal per materi + submit jawaban (adaptive scoring sederhana).
-
-Teks soal/opsi/penjelasan disimpan dwibahasa; endpoint menerima ?lang=en|id.
-"""
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
