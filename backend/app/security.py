@@ -1,5 +1,3 @@
-"""Helper auth: hashing password + encode/decode JWT."""
-
 from datetime import datetime, timedelta, timezone
 
 import bcrypt

@@ -1,5 +1,3 @@
-"""ORM models. Mengikuti skema di database/schema.sql."""
-
 from datetime import datetime
 
 from sqlalchemy import (

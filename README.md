@@ -28,19 +28,6 @@ Mindspark menerima materi kuliah (PDF/slide/foto catatan), lalu menyediakan **ri
    (compute di cloud utama, bucket di GCP)
 ```
 
-Pemetaan ke **komponen wajib** tugas:
-
-| Wajib | Implementasi |
-|---|---|
-| Frontend | `frontend/` — React + Vite, build → nginx |
-| Backend / API | `backend/` — FastAPI |
-| Database | PostgreSQL (`database/schema.sql`) |
-| Object Storage | Google Cloud Storage (`backend/app/storage.py`) |
-| Docker | Dockerfile tiap service + `docker-compose.yml` |
-| CDN | nginx (frontend); siap di depan CDN cloud |
-| VPC | segmentasi via network terpisah di compose (Frontend/Backend/AI/DB) |
-| AI Service | `ai-service/` — RAG: bge-m3 + Gemini |
-
 ## Menjalankan (Docker — semua service sekaligus)
 
 ```bash
@@ -94,12 +81,3 @@ app/
 ## Dokumentasi
 - API + Swagger interaktif: http://localhost:8000/docs (saat service jalan)
 - Klien REST frontend: [frontend/src/api.js](frontend/src/api.js)
-
-## Status & langkah berikutnya
-- [x] Frontend (UI React + Vite)
-- [x] Backend API + AI Service + Database + Docker Compose
-- [x] UI frontend tersambung ke API (`frontend/src/api.js` + semua screen, data mock → REST)
-- [x] Dockerisasi frontend (Dockerfile + nginx + `.dockerignore`)
-- [x] Manajemen secret via `.env` / `.env.example` (rahasia tidak ter-commit)
-- [ ] CI/CD GitHub Actions (Build → Test → Dockerize → Push → Deploy)
-- [ ] Deploy ke cloud + VPC nyata + CDN; bonus: Terraform, monitoring, K8s

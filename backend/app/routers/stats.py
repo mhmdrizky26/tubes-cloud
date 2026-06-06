@@ -1,5 +1,3 @@
-"""Dashboard stats — angka nyata dari DB (materi, jawaban, akurasi)."""
-
 from fastapi import APIRouter, Depends
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -34,7 +32,7 @@ def stats(lang: str = "en", db: Session = Depends(get_db), current: User = Depen
     recent = []
     for m in recent_rows:
         out = MaterialOut.model_validate(m)
-        out.summary = pick_text(m.summary, lang)  # hindari JSON mentah bocor
+        out.summary = pick_text(m.summary, lang)
         recent.append(out)
     return StatsOut(
         materials=materials,

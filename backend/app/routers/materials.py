@@ -1,6 +1,3 @@
-"""Materials: upload file → simpan ke bucket → kirim ke AI Service untuk
-ekstraksi teks, chunk+embedding (RAG), ringkasan, dan generate quiz."""
-
 import base64
 
 import httpx
@@ -41,13 +38,13 @@ def _bi_options(value) -> dict | None:
     if isinstance(value, dict):
         en = value.get("en") or value.get("id") or []
         idn = value.get("id") or value.get("en") or []
-    elif isinstance(value, list):  # satu bahasa
+    elif isinstance(value, list):
         en = idn = value
     else:
         return None
     if not (isinstance(en, list) and isinstance(idn, list) and len(en) >= 2):
         return None
-    if len(idn) != len(en):  # samakan panjang biar answer_index konsisten
+    if len(idn) != len(en):
         idn = en
     return {"en": [str(o) for o in en], "id": [str(o) for o in idn]}
 
@@ -94,7 +91,6 @@ async def upload_material(
     db.commit()
     db.refresh(material)
 
-    # Bukan gambar & tak ada teks (mis. file rusak) → jangan buang kuota AI.
     if not text.strip() and not img:
         material.status = "ready"
         material.summary = (
@@ -105,10 +101,8 @@ async def upload_material(
         db.refresh(material)
         return _material_out(material, lang)
 
-    # Gambar → kirim bytes (base64) supaya dibaca Gemini vision di AI Service.
     image_b64 = base64.b64encode(data).decode() if (img and not text.strip()) else None
 
-    # Panggil AI Service (VPC terpisah) untuk ingest: (vision/ekstrak) → chunk → embed → ringkas + quiz.
     try:
         async with httpx.AsyncClient(timeout=180) as client:
             resp = await client.post(
@@ -117,7 +111,6 @@ async def upload_material(
                     "material_id": material.id,
                     "filename": filename,
                     "content_type": file.content_type,
-                    # teks hasil ekstraksi (PDF/DOCX/PPTX/txt). Gambar → image_b64.
                     "raw_text": text[:200_000],
                     "image_b64": image_b64,
                 },
@@ -131,14 +124,13 @@ async def upload_material(
         material.status = "ready"
 
         for q in result.get("quiz", []):
-            # Lewati item malformed agar 1 soal rusak tidak menggagalkan seluruh materi.
             options = _bi_options(q.get("options"))
             question = _bi(q.get("question"))
             if options is None or not (question["en"] or question["id"]):
                 continue
             ans = q.get("answer_index", 0)
             if not isinstance(ans, int) or not (0 <= ans < len(options["en"])):
-                ans = 0  # clamp ke index valid
+                ans = 0
             db.add(
                 Quiz(
                     material_id=material.id,
@@ -151,7 +143,7 @@ async def upload_material(
             )
         db.commit()
         db.refresh(material)
-    except Exception as exc:  # AI service down → material still saved, status failed
+    except Exception as exc:
         material.status = "failed"
         material.summary = f"AI processing failed: {exc}"
         db.commit()

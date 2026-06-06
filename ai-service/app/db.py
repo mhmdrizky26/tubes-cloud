@@ -1,8 +1,3 @@
-"""Akses pgvector untuk simpan/cari chunk embedding.
-
-Memakai psycopg2 langsung (tanpa ORM) supaya operasi vektor pgvector eksplisit.
-"""
-
 from contextlib import closing
 
 import psycopg2
@@ -15,7 +10,6 @@ def _conn():
 
 
 def _vec_literal(vec: list[float]) -> str:
-    # Format literal pgvector: '[0.1,0.2,...]'
     return "[" + ",".join(f"{x:.6f}" for x in vec) + "]"
 
 
@@ -24,7 +18,6 @@ def save_chunks(material_id: int, chunks: list[str], vectors: list[list[float]])
     # tidak menutup koneksi → tanpa ini koneksi bocor sampai "too many clients").
     with closing(_conn()) as conn:
         with conn.cursor() as cur:
-            # Hapus chunk lama materi ini (idempotent saat re-ingest)
             cur.execute("DELETE FROM chunks WHERE material_id = %s", (material_id,))
             for idx, (text, vec) in enumerate(zip(chunks, vectors)):
                 cur.execute(

@@ -1,10 +1,3 @@
-"""Helper konten dwibahasa.
-
-Field teks AI (summary, question, options, explanation) disimpan sebagai JSON
-dwibahasa: {"en": ..., "id": ...}. Helper di sini mengekstrak satu bahasa dan
-tetap kompatibel dengan data lama (string biasa / list biasa).
-"""
-
 import json
 
 LANGS = ("en", "id")
@@ -45,6 +38,6 @@ def pick_options(raw, lang: str) -> list[str]:
     if isinstance(data, dict):
         opts = data.get(lang) or data.get("en") or next(iter(data.values()), [])
         return [str(o) for o in opts] if isinstance(opts, list) else []
-    if isinstance(data, list):  # data lama
+    if isinstance(data, list):
         return [str(o) for o in data]
     return []
