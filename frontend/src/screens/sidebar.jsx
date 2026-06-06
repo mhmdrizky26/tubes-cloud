@@ -4,18 +4,18 @@ import { SparkMark, Icon } from "../icons.jsx";
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: "home" },
-  { id: "library",   label: "Library",   icon: "book", count: 12 },
+  { id: "library",   label: "Library",   icon: "book" },
   { id: "upload",    label: "Add material", icon: "upload" },
 ];
 const studyItems = [
   { id: "quiz",       label: "Quiz arena",  icon: "quiz" },
-  { id: "flashcards", label: "Flashcards",  icon: "cards", count: 38 },
+  { id: "flashcards", label: "Flashcards",  icon: "cards" },
   { id: "chat",       label: "Ask my notes", icon: "chat" },
 ];
 
-const Sidebar = ({ route, setRoute }) => {
-  const streakDays = [1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0];
-  const week = streakDays.slice(0, 7);
+const Sidebar = ({ route, setRoute, user, onLogout }) => {
+  const name = user?.name || "Learner";
+  const initial = name.trim().charAt(0).toUpperCase() || "M";
   return (
     <aside className="sb">
       <div className="sb__brand">
@@ -55,23 +55,22 @@ const Sidebar = ({ route, setRoute }) => {
         })}
       </nav>
 
-      <div className="sb__streak">
-        <h4>
-          <Icon.fire width={16} height={16} style={{ color: "var(--spark-500)" }} />
-          13-day streak
-        </h4>
-        <p>Study today to keep the spark going.</p>
-        <div className="sb__streak-bar" aria-hidden="true">
-          {week.map((d, i) => <span key={i} className={d ? "on" : ""} />)}
-        </div>
-      </div>
+      <div style={{ flex: 1 }} />
 
       <div className="sb__user">
-        <div className="sb__avatar">R</div>
-        <div>
-          <div className="sb__user-name">Rangga Maulana</div>
-          <div className="sb__user-meta">ITB · CS '25</div>
+        <div className="sb__avatar">{initial}</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="sb__user-name">{name}</div>
+          <div className="sb__user-meta">{user?.email || "Mindspark"}</div>
         </div>
+        <Icon.arrow className="sb__user-caret" width={14} height={14} />
+        {onLogout && (
+          <div className="sb__user-pop">
+            <button className="sb__logout" onClick={onLogout}>
+              <Icon.back width={14} height={14} /> Log out
+            </button>
+          </div>
+        )}
       </div>
     </aside>
   );

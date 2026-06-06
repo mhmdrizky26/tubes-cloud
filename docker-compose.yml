@@ -1,0 +1,93 @@
+# ════════════════════════════════════════════════════════════════
+# Mindspark — orkestrasi seluruh service (Cloud Native, local dev)
+#
+# Pemisahan jaringan meniru segmentasi VPC pada proposal:
+#   frontend_net  → Frontend VPC
+#   backend_net   → Backend VPC
+#   ai_net        → AI Service VPC
+#   db_net        → Database VPC
+# Database & AI Service TIDAK diekspos ke host (hanya internal).
+# ════════════════════════════════════════════════════════════════
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: mindspark
+      POSTGRES_PASSWORD: mindspark
+      POSTGRES_DB: mindspark
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    networks:
+      - db_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mindspark"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ai-service:
+    build: ./ai-service
+    environment:
+      DATABASE_URL: postgresql://mindspark:mindspark@db:5432/mindspark
+      EMBEDDING_MODEL: BAAI/bge-m3
+      EMBEDDING_DIM: "1024"
+      USE_MOCK_EMBEDDING: ${USE_MOCK_EMBEDDING:-false}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: gemini-2.5-flash-lite,gemini-2.0-flash-lite,gemini-2.5-flash,gemini-2.0-flash
+    volumes:
+      - hf_cache:/root/.cache/huggingface   # cache model bge-m3 antar restart
+    networks:
+      - ai_net
+      - db_net
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://mindspark:mindspark@db:5432/mindspark
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      AI_SERVICE_URL: http://ai-service:8001
+      GCS_BUCKET: ${GCS_BUCKET:-mindspark-materials}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
+      LOCAL_STORAGE_DIR: /data/uploads
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:8080}
+    ports:
+      - "8000:8000"
+    volumes:
+      - uploads:/data/uploads
+    networks:
+      - backend_net
+      - ai_net
+      - db_net
+    depends_on:
+      db:
+        condition: service_healthy
+      ai-service:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+    ports:
+      - "8080:80"
+    networks:
+      - frontend_net
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
+  uploads:
+  hf_cache:
+
+networks:
+  frontend_net:
+  backend_net:
+  ai_net:
+  db_net:

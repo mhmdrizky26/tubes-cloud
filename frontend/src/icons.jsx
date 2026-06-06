@@ -30,16 +30,6 @@ const SparkBolt = ({ size = 16, color = "var(--spark-500)" }) => (
   </svg>
 );
 
-const Sparkle = ({ size = 14, color = "var(--ember-500)" }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M12 2 L13.5 9 L20 10.5 L13.5 12 L12 19 L10.5 12 L4 10.5 L10.5 9 Z" fill={color} />
-  </svg>
-);
-
-const Dot = ({ size = 6, color = "var(--spark-500)" }) => (
-  <svg width={size} height={size} viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill={color} /></svg>
-);
-
 const Icon = {
   home: (p) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>
@@ -106,11 +96,6 @@ const Icon = {
       <path d="m6 6 12 12M18 6 6 18" />
     </svg>
   ),
-  fire: (p) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>
-      <path d="M12 3c1 3-2 4-2 7a4 4 0 0 0 8 0c0-2-1-3-1-5 0 2-2 3-3 3 0-3 2-3-2-5Z" />
-    </svg>
-  ),
   file: (p) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>
       <path d="M14 3H6v18h12V7l-4-4Z" /><path d="M14 3v4h4" />
@@ -132,29 +117,9 @@ const Icon = {
       <rect x="3" y="5" width="18" height="11" rx="2" /><path d="M9 20h6" /><path d="M12 16v4" />
     </svg>
   ),
-  brain: (p) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>
-      <path d="M9 4a3 3 0 0 0-3 3v1a3 3 0 0 0-1 5 3 3 0 0 0 1 5v1a3 3 0 0 0 3 3" />
-      <path d="M15 4a3 3 0 0 1 3 3v1a3 3 0 0 1 1 5 3 3 0 0 1-1 5v1a3 3 0 0 1-3 3" />
-      <path d="M12 5v14" />
-    </svg>
-  ),
-  star: (p) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>
-      <path d="m12 3 2.6 5.6 6.4.6-4.8 4.3 1.4 6.5L12 17l-5.6 3 1.4-6.5L3 9.2l6.4-.6L12 3Z" />
-    </svg>
-  ),
   send: (p) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>
       <path d="M3 11 21 3 14 21l-3-8-8-2Z" />
-    </svg>
-  ),
-  more: (p) => (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...p}><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>
-  ),
-  paperclip: (p) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>
-      <path d="M20 12 12 20a5 5 0 0 1-7-7l9-9a3.5 3.5 0 0 1 5 5l-8 8a2 2 0 0 1-3-3l7-7" />
     </svg>
   ),
   back: (p) => (
@@ -200,4 +165,4 @@ const SparkSplash = ({ className = "" }) => (
   </svg>
 );
 
-export { SparkMark, SparkBolt, Sparkle, Dot, Icon, SparkSplash };
+export { SparkMark, SparkBolt, Icon, SparkSplash };

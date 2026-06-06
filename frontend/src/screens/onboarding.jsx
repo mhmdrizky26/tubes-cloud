@@ -1,11 +1,20 @@
 // Mindspark — onboarding / signup
 
 import React from "react";
+import { api } from "../api.js";
 import { SparkMark, SparkBolt, Icon } from "../icons.jsx";
 
 const Onboarding = ({ onEnter }) => {
   const [mode, setMode] = React.useState("signup"); // signup | login
   const [step, setStep] = React.useState(0); // 0 form, 1 picking interest, 2 ready
+
+  // form state (controlled — dikirim ke API)
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [user, setUser] = React.useState(null);
 
   // step 1 interests
   const interests = [
@@ -16,7 +25,25 @@ const Onboarding = ({ onEnter }) => {
   const [picked, setPicked] = React.useState(["Computer Science", "Mathematics"]);
   const togglePick = (i) => setPicked(p => p.includes(i) ? p.filter(x => x !== i) : [...p, i]);
 
-  const onSubmit = (e) => { e.preventDefault(); setStep(1); };
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      if (mode === "signup") {
+        const u = await api.register(email, name, password);
+        setUser(u);
+        setStep(1); // lanjut pilih minat sebelum masuk
+      } else {
+        const u = await api.login(email, password);
+        onEnter(u); // langsung masuk
+      }
+    } catch (err) {
+      setError(err.message || "Something went wrong, try again");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="onb">
@@ -87,21 +114,28 @@ const Onboarding = ({ onEnter }) => {
               {mode === "signup" && (
                 <div className="field">
                   <label>Full name</label>
-                  <input type="text" defaultValue="Rangga Maulana" />
+                  <input type="text" placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} />
                 </div>
               )}
               <div className="field">
                 <label>Email</label>
-                <input type="email" defaultValue="rangga@student.itb.ac.id" />
+                <input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className="field">
                 <label>Password</label>
-                <input type="password" defaultValue="••••••••••" />
+                <input type="password" placeholder="At least 6 characters" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
 
-              <button type="submit" className="btn btn--spark btn--lg" style={{ width: "100%", justifyContent: "center", marginTop: 6 }}>
+              {error && (
+                <div className="mono" style={{ color: "var(--bad)", fontSize: 12.5, margin: "8px 0 0" }}>
+                  {error}
+                </div>
+              )}
+
+              <button type="submit" disabled={loading} className="btn btn--spark btn--lg"
+                style={{ width: "100%", justifyContent: "center", marginTop: 6, opacity: loading ? 0.6 : 1 }}>
                 <SparkBolt size={16} color="white" />
-                {mode === "signup" ? "Create my Mindspark" : "Sign in"}
+                {loading ? "Processing…" : mode === "signup" ? "Create my Mindspark" : "Sign in"}
               </button>
 
               <div className="divider">or continue with</div>
@@ -111,7 +145,7 @@ const Onboarding = ({ onEnter }) => {
                   <Icon.google width={18} height={18} /> Google
                 </button>
                 <button type="button" className="social-btn">
-                  <Icon.book width={18} height={18} /> SSO Kampus
+                  <Icon.book width={18} height={18} /> Campus SSO
                 </button>
               </div>
 
@@ -148,7 +182,7 @@ const Onboarding = ({ onEnter }) => {
             </div>
 
             <button className="btn btn--spark btn--lg" style={{ width: "100%", justifyContent: "center" }}
-              onClick={() => onEnter()}>
+              onClick={() => onEnter(user)}>
               Light it up <Icon.arrow width={16} height={16} />
             </button>
           </div>

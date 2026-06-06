@@ -1,0 +1,1 @@
+Kubernetes orchestrates containers. A Pod is the smallest unit. A Service exposes Pods. A Deployment manages replicas and rolling updates.
