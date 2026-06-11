@@ -51,8 +51,8 @@ services:
       DATABASE_URL: postgresql+psycopg2://mindspark:mindspark@db:5432/mindspark
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
       AI_SERVICE_URL: http://ai-service:8001
-      GCS_BUCKET: ${GCS_BUCKET:-mindspark-materials}
-      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING:-}
+      AZURE_STORAGE_CONTAINER: ${AZURE_STORAGE_CONTAINER:-materials}
       LOCAL_STORAGE_DIR: /data/uploads
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:8080}
     ports:

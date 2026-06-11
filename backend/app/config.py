@@ -17,9 +17,9 @@ class Settings(BaseSettings):
     # AI Service (VPC terpisah)
     ai_service_url: str = "http://ai-service:8001"
 
-    # Object storage (multi-cloud bucket)
-    gcs_bucket: str = "mindspark-materials"
-    google_application_credentials: str = ""
+    # Object storage (multi-cloud bucket — Azure Blob Storage)
+    azure_storage_connection_string: str = ""
+    azure_storage_container: str = "materials"
     local_storage_dir: str = "/data/uploads"
 
     # CORS

@@ -1,8 +1,9 @@
-"""Abstraksi object storage.
+"""Abstraksi object storage (Azure Blob Storage — multi-cloud).
 
-Multi-cloud: file materi disimpan di Google Cloud Storage (bucket), sementara
-compute (API ini) berjalan di cloud utama (mis. AWS). Jika kredensial GCS belum
-tersedia, fallback ke disk lokal supaya tetap bisa dev/demo tanpa cloud.
+Multi-cloud: compute (API ini) berjalan di AWS, sementara file materi disimpan
+di **Azure Blob Storage** (cloud berbeda → memenuhi syarat multi-cloud). Jika
+kredensial Azure belum di-set, fallback ke disk lokal supaya tetap bisa
+dev/demo tanpa cloud.
 """
 
 import os
@@ -19,18 +20,24 @@ def _local_fallback(filename: str, data: bytes) -> str:
 
 
 def upload_bytes(filename: str, data: bytes, content_type: str = "application/octet-stream") -> str:
-    """Simpan file, kembalikan URI penyimpanan (gcs://... atau file://...)."""
-    if not settings.google_application_credentials:
+    """Simpan file ke Azure Blob, kembalikan URL blob (atau file://... saat fallback)."""
+    if not settings.azure_storage_connection_string:
         return _local_fallback(filename, data)
 
     try:
-        from google.cloud import storage  # import lazy: hindari error kalau lib belum dipakai
+        # import lazy: hindari error kalau lib belum dipakai / kredensial kosong
+        from azure.storage.blob import BlobServiceClient, ContentSettings
 
-        client = storage.Client()
-        bucket = client.bucket(settings.gcs_bucket)
-        blob = bucket.blob(filename)
-        blob.upload_from_string(data, content_type=content_type)
-        return f"gcs://{settings.gcs_bucket}/{filename}"
+        service = BlobServiceClient.from_connection_string(settings.azure_storage_connection_string)
+        container = service.get_container_client(settings.azure_storage_container)
+        try:
+            container.create_container()  # idempotent: aman kalau sudah ada
+        except Exception:
+            pass
+        blob = container.get_blob_client(filename)
+        blob.upload_blob(data, overwrite=True, content_settings=ContentSettings(content_type=content_type))
+        # URL: https://<account>.blob.core.windows.net/<container>/<filename>
+        return blob.url
     except Exception:
-        # Kalau GCS gagal (kredensial salah, dll) jangan jatuhkan request demo.
+        # Kalau Azure gagal (kredensial salah, jaringan) jangan jatuhkan request demo.
         return _local_fallback(filename, data)

@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="990" viewBox="0 0 1520 990" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="sh" x="-5%" y="-5%" width="110%" height="118%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#E0A800"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1520" height="990" fill="#F6F8FB"/>
+
+  <!-- title -->
+  <text x="760" y="44" text-anchor="middle" font-size="28" font-weight="700" fill="#1A202C">Perubahan Arsitektur — Diagram Awal → Implementasi</text>
+  <text x="760" y="72" text-anchor="middle" font-size="14.5" fill="#4A5568">MindSpark · tetap 100% memenuhi ketentuan PDF (Frontend/Backend/Database VPC terpisah · Storage VPC di Azure · multi-cloud · semua bonus)</text>
+
+  <!-- ===================== LEFT: DIAGRAM AWAL ===================== -->
+  <rect x="40" y="100" width="690" height="520" rx="12" fill="#FFFFFF" stroke="#B0B8C4" stroke-width="1.5"/>
+  <rect x="40" y="100" width="690" height="40" rx="12" fill="#94A3B8"/>
+  <text x="60" y="126" font-size="16" font-weight="700" fill="#FFFFFF">DIAGRAM AWAL (rancanganmu)</text>
+
+  <!-- AWS container -->
+  <rect x="60" y="160" width="650" height="288" rx="10" fill="#FFF8EE" stroke="#FF9900" stroke-width="1.5"/>
+  <text x="76" y="182" font-size="13" font-weight="700" fill="#B25E00">&#9729; AWS Cloud</text>
+
+  <rect x="76" y="194" width="618" height="46" rx="8" fill="#FFFFFF" stroke="#5A7DA0" filter="url(#sh)"/>
+  <text x="90" y="222" font-size="13.5" fill="#2D3748"><tspan font-weight="700">Frontend VPC</tspan>  —  EKS Pods (Nginx + React)</text>
+
+  <rect x="76" y="246" width="618" height="46" rx="8" fill="#FFFFFF" stroke="#5A7DA0" filter="url(#sh)"/>
+  <text x="90" y="274" font-size="13.5" fill="#2D3748"><tspan font-weight="700">Backend VPC</tspan>  —  EKS Pods (FastAPI)</text>
+
+  <rect x="76" y="298" width="618" height="46" rx="8" fill="#FFF3CD" stroke="#E0A800" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="90" y="326" font-size="13.5" fill="#8A6300"><tspan font-weight="700">AI Service VPC</tspan>  —  EKS Pods + bge-m3</text>
+
+  <rect x="76" y="350" width="618" height="46" rx="8" fill="#FFFFFF" stroke="#5A7DA0" filter="url(#sh)"/>
+  <text x="90" y="378" font-size="13.5" fill="#2D3748"><tspan font-weight="700">Database VPC</tspan>  —  Amazon RDS + pgvector</text>
+
+  <text x="385" y="424" text-anchor="middle" font-size="12" fill="#6B46C1" font-weight="600">disambung Transit Gateway</text>
+
+  <!-- Azure + Gemini -->
+  <rect x="60" y="466" width="310" height="64" rx="10" fill="#EAF4FE" stroke="#0078D4" stroke-width="1.5"/>
+  <text x="215" y="494" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1A4E8A">Azure Blob Storage</text>
+  <text x="215" y="514" text-anchor="middle" font-size="11.5" fill="#4A5568">object storage (multi-cloud)</text>
+
+  <rect x="400" y="466" width="310" height="64" rx="10" fill="#EAF5EC" stroke="#34A853" stroke-width="1.5"/>
+  <text x="555" y="494" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1E7E34">Gemini API</text>
+  <text x="555" y="514" text-anchor="middle" font-size="11.5" fill="#4A5568">LLM generation</text>
+
+  <text x="385" y="566" text-anchor="middle" font-size="12.5" fill="#718096">4 VPC · semua tier = EKS Pods</text>
+
+  <!-- arrow between panels -->
+  <line x1="738" y1="360" x2="782" y2="360" stroke="#E0A800" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- ===================== RIGHT: IMPLEMENTASI ===================== -->
+  <rect x="790" y="100" width="690" height="520" rx="12" fill="#FFFFFF" stroke="#2F855A" stroke-width="1.5"/>
+  <rect x="790" y="100" width="690" height="40" rx="12" fill="#2F855A"/>
+  <text x="810" y="126" font-size="16" font-weight="700" fill="#FFFFFF">IMPLEMENTASI (yang dibangun)</text>
+
+  <rect x="810" y="160" width="650" height="288" rx="10" fill="#FFF8EE" stroke="#FF9900" stroke-width="1.5"/>
+  <text x="826" y="182" font-size="13" font-weight="700" fill="#B25E00">&#9729; AWS Cloud · us-east-1</text>
+
+  <!-- Frontend changed -->
+  <rect x="826" y="194" width="618" height="46" rx="8" fill="#FFFFFF" stroke="#E0A800" stroke-width="2" filter="url(#sh)"/>
+  <text x="840" y="222" font-size="13.5" fill="#2D3748"><tspan font-weight="700">Frontend VPC</tspan>  —  ECS Fargate (Nginx + React)</text>
+  <rect x="1374" y="205" width="56" height="22" rx="11" fill="#FFF3CD"/>
+  <text x="1402" y="220" text-anchor="middle" font-size="11" font-weight="700" fill="#8A6300">UBAH</text>
+
+  <!-- Backend changed (now hosts AI) -->
+  <rect x="826" y="246" width="618" height="58" rx="8" fill="#FFFFFF" stroke="#E0A800" stroke-width="2" filter="url(#sh)"/>
+  <text x="840" y="270" font-size="13.5" fill="#2D3748"><tspan font-weight="700">Backend VPC</tspan>  —  EKS (m7i-flex.large)</text>
+  <text x="840" y="290" font-size="12" fill="#4A5568">namespace: <tspan font-weight="700" fill="#2C5282">backend</tspan> + <tspan font-weight="700" fill="#8A6300">ai + bge-m3</tspan></text>
+  <rect x="1374" y="263" width="56" height="22" rx="11" fill="#FFF3CD"/>
+  <text x="1402" y="278" text-anchor="middle" font-size="11" font-weight="700" fill="#8A6300">UBAH</text>
+
+  <!-- Database unchanged -->
+  <rect x="826" y="310" width="618" height="42" rx="8" fill="#FFFFFF" stroke="#5A7DA0" filter="url(#sh)"/>
+  <text x="840" y="336" font-size="13.5" fill="#2D3748"><tspan font-weight="700">Database VPC</tspan>  —  Amazon RDS + pgvector</text>
+
+  <!-- AI VPC merged note -->
+  <rect x="826" y="358" width="618" height="40" rx="8" fill="#F1F5F9" stroke="#CBD5E0" stroke-dasharray="4 3"/>
+  <text x="840" y="382" font-size="12.5" fill="#94A3B8"><tspan text-decoration="line-through">AI Service VPC</tspan>  &#8594;  digabung jadi namespace di Backend VPC (opsional di PDF)</text>
+
+  <text x="1135" y="424" text-anchor="middle" font-size="12" fill="#6B46C1" font-weight="600">disambung Transit Gateway</text>
+
+  <!-- Azure + Gemini -->
+  <rect x="810" y="466" width="310" height="64" rx="10" fill="#EAF4FE" stroke="#0078D4" stroke-width="2"/>
+  <text x="965" y="490" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1A4E8A">Azure Blob + VNet + Private Endpoint</text>
+  <text x="965" y="510" text-anchor="middle" font-size="11.5" fill="#4A5568">"Storage VPC" · kode diubah GCS &#8594; Azure</text>
+
+  <rect x="1150" y="466" width="310" height="64" rx="10" fill="#EAF5EC" stroke="#34A853" stroke-width="1.5"/>
+  <text x="1305" y="494" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1E7E34">Gemini API</text>
+  <text x="1305" y="514" text-anchor="middle" font-size="11.5" fill="#4A5568">LLM generation</text>
+
+  <text x="1135" y="566" text-anchor="middle" font-size="12.5" fill="#2F855A" font-weight="600">3 VPC · 1 EKS (backend+ai) · Frontend Fargate</text>
+
+  <!-- ===================== CHANGES SUMMARY ===================== -->
+  <text x="40" y="676" font-size="18" font-weight="700" fill="#1A202C">Ringkasan Perubahan &amp; Alasannya</text>
+
+  <!-- card 1 -->
+  <rect x="40" y="692" width="345" height="232" rx="10" fill="#FFFFFF" stroke="#E2E8F0" filter="url(#sh)"/>
+  <rect x="40" y="692" width="345" height="6" rx="3" fill="#E0A800"/>
+  <text x="58" y="724" font-size="14.5" font-weight="700" fill="#2D3748">1 · AI Service VPC &#8594; namespace</text>
+  <text x="58" y="752" font-size="11.8" fill="#4A5568"><tspan x="58" dy="0">AI tidak lagi VPC sendiri — jalan sebagai</tspan><tspan x="58" dy="18">namespace "ai" di EKS Backend VPC.</tspan><tspan x="58" dy="22" font-weight="700" fill="#2D3748">Kenapa:</tspan><tspan x="58" dy="18">1 cluster EKS = 1 VPC. AI VPC bersifat</tspan><tspan x="58" dy="18">OPSIONAL di PDF, jadi digabung &#8594; 1</tspan><tspan x="58" dy="18">cluster menjalankan 2 workload (hemat</tspan><tspan x="58" dy="18">&amp; demo K8s tetap kuat).</tspan></text>
+
+  <!-- card 2 -->
+  <rect x="405" y="692" width="345" height="232" rx="10" fill="#FFFFFF" stroke="#E2E8F0" filter="url(#sh)"/>
+  <rect x="405" y="692" width="345" height="6" rx="3" fill="#E0A800"/>
+  <text x="423" y="724" font-size="14.5" font-weight="700" fill="#2D3748">2 · Frontend: EKS &#8594; ECS Fargate</text>
+  <text x="423" y="752" font-size="11.8" fill="#4A5568"><tspan x="423" dy="0">Frontend tidak pakai EKS, tapi ECS</tspan><tspan x="423" dy="18">Fargate (serverless container) di</tspan><tspan x="423" dy="18">Frontend VPC.</tspan><tspan x="423" dy="22" font-weight="700" fill="#2D3748">Kenapa:</tspan><tspan x="423" dy="18">EKS hanya hidup di Backend VPC.</tspan><tspan x="423" dy="18">Bonus: Fargate = serverless &#8594; peluang</tspan><tspan x="423" dy="18">klaim bonus Serverless +3.</tspan></text>
+
+  <!-- card 3 -->
+  <rect x="770" y="692" width="345" height="232" rx="10" fill="#FFFFFF" stroke="#E2E8F0" filter="url(#sh)"/>
+  <rect x="770" y="692" width="345" height="6" rx="3" fill="#2F855A"/>
+  <text x="788" y="724" font-size="14.5" font-weight="700" fill="#2D3748">3 · 4 VPC &#8594; 3 VPC (+ Azure)</text>
+  <text x="788" y="752" font-size="11.8" fill="#4A5568"><tspan x="788" dy="0">Frontend, Backend, Database tetap VPC</tspan><tspan x="788" dy="18">TERPISAH (wajib PDF). AI VPC (opsional)</tspan><tspan x="788" dy="18">digabung.</tspan><tspan x="788" dy="22" font-weight="700" fill="#2D3748">Kenapa:</tspan><tspan x="788" dy="18">Lebih murah &amp; andal. Storage tetap di</tspan><tspan x="788" dy="18">Azure (Storage VPC = VNet + Private</tspan><tspan x="788" dy="18">Endpoint) &#8594; multi-cloud tetap utuh.</tspan></text>
+
+  <!-- card 4 -->
+  <rect x="1135" y="692" width="345" height="232" rx="10" fill="#FFFFFF" stroke="#E2E8F0" filter="url(#sh)"/>
+  <rect x="1135" y="692" width="345" height="6" rx="3" fill="#2B6CB0"/>
+  <text x="1153" y="724" font-size="14.5" font-weight="700" fill="#2D3748">4 · Node: m7i-flex.large (8 GB)</text>
+  <text x="1153" y="752" font-size="11.8" fill="#4A5568"><tspan x="1153" dy="0">Node EKS pakai m7i-flex.large (8 GB),</tspan><tspan x="1153" dy="18">bukan t3.large.</tspan><tspan x="1153" dy="22" font-weight="700" fill="#2D3748">Kenapa:</tspan><tspan x="1153" dy="18">Akun AWS Free Plan hanya boleh instance</tspan><tspan x="1153" dy="18">free-tier-eligible; t3.large ditolak.</tspan><tspan x="1153" dy="18">m7i-flex.large gratis &amp; cukup besar &#8594;</tspan><tspan x="1153" dy="18">bge-m3 self-hosted tetap berjalan.</tspan></text>
+
+  <!-- footer -->
+  <rect x="40" y="940" width="1440" height="34" rx="8" fill="#E6F4EA" stroke="#2F855A"/>
+  <text x="760" y="962" text-anchor="middle" font-size="13" font-weight="700" fill="#22683F">&#10003; Semua ketentuan PDF tetap terpenuhi — 8 komponen wajib, VPC segmentasi, multi-cloud, + bonus K8s · Monitoring · Self-hosted AI · Autoscaling</text>
+</svg>

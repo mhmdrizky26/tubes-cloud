@@ -1,0 +1,83 @@
+# AI Service (RAG: bge-m3 self-hosted + Gemini) — namespace "ai"
+# Hanya service ini yang memegang GEMINI_API_KEY (isolasi sesuai arsitektur).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-service
+  namespace: ai
+  labels:
+    app: ai-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-service
+  template:
+    metadata:
+      labels:
+        app: ai-service
+    spec:
+      containers:
+        - name: ai-service
+          image: 726412861887.dkr.ecr.us-east-1.amazonaws.com/mindspark/ai-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8001
+          env:
+            - name: EMBEDDING_MODEL
+              value: "BAAI/bge-m3"
+            - name: EMBEDDING_DIM
+              value: "1024"
+            - name: USE_MOCK_EMBEDDING
+              value: "false"
+            - name: GEMINI_MODEL
+              value: "gemini-2.5-flash-lite,gemini-2.0-flash-lite,gemini-2.5-flash,gemini-2.0-flash"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ai-secrets
+                  key: DATABASE_URL
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ai-secrets
+                  key: GEMINI_API_KEY
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "2Gi"
+            limits:
+              cpu: "2"
+              memory: "5Gi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 40
+            periodSeconds: 20
+          volumeMounts:
+            - name: hf-cache
+              mountPath: /root/.cache/huggingface
+      volumes:
+        - name: hf-cache
+          emptyDir:
+            sizeLimit: 6Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-service
+  namespace: ai
+spec:
+  type: ClusterIP
+  selector:
+    app: ai-service
+  ports:
+    - port: 8001
+      targetPort: 8001
